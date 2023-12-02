@@ -19,35 +19,79 @@
 
 
 
-class parkingGarage():
-
-    def __init__(self, tickets, parkingSpaces, currentTicket):
-        self.tickets = tickets
-        self.parkingSpaces = parkingSpaces
-        self.currentTicket = currentTicket
-
-    def takeTicket(self):
-        x = input('Would you like to park in this garage?(yes/no)')
-        # parkingSpaces = 40
-        # tickets = 40 
-        if x == 'yes':
-            print('Please take the ticket. You have fifteen minutes.')
-            self.parkingSpaces - 1
-            self.tickets - 1
-        else: 
-            print('Have a nice day')
+class Parking_garage():
+    def __init__(self):
+        self.parking_spaces = [1,2,3,4,5,6,7,8,9,10]
+        self.tickets = [1,2,3,4,5,6,7,8,9,10]
+        self.issued_tickets = {}
     
+    def takeTicket(self):
+        if len(self.tickets) < 1:
+            print("Parking garage is full!!")
+            return
+            
+        number=self.tickets.pop(0)
+        print(number)
+        
+        self.issued_tickets[number] = 'not paid'
+        print(self.issued_tickets)
+       
+        self_parking_spaces=self.parking_spaces.pop(0)
+        print(f"Parking spaces available are: {self.parking_spaces}. ")
+        
+        
     def payForParking(self):
-        self.payment = input('It will be five dollars')
-        if int(self.payment) >= 5:
-            print('Thank you, have a nice day.')
-            self.parkingSpaces + 1
-            self.tickets + 1
+        number=int(input("Please enter in your ticket number: "))
+        if number in self.tickets:
+            print("please select a valid ticket")
+            return
+        paid_ticket=(input("Please pay for the ticket. "))
+        if int(paid_ticket) <1:
+            print(input("Please pay for your ticket. "))
         else:
-            input('Something is wrong with your payemnt, please try again.')
+            self.issued_tickets[number] = 'paid'
+            print(self.issued_tickets)
+            print(f" Ticket {number} has been paid. You have 15 minutes to leave.")
 
 
-mall_lot = parkingGarage(40, 40, {})
+    def leaveGarage(self):
+        number=int(input("Please scan the ticket: "))
+        if number in self.tickets:
+            print("please select a valid ticket")
+            return
+        if self.issued_tickets[number] == 'paid':
+            self.issued_tickets.pop(number)
+            print(self.issued_tickets)
+            print("Thank You, have a nice day")
+            
+            self.parking_spaces.append(number)
+            self.tickets.append(number)
+        else:
+            print("Please pay for ticket!!")
+            
+        
 
-mall_lot.takeTicket()
+class UI():
+    def __init__(self, person):
+        self.person = person
+    
+    def run_program(self):
+        while True:
+            response = input(f"Hello, What would you like to do? Park, pay, leave, or quit?")
+            if response.lower() == 'quit':
+                print(f"Hope to see you soon!!")
+                break
+            elif response.lower() == 'park':
+                print("Please take ticket #")
+                self.person.takeTicket()
+            elif response.lower() == 'pay':
+                self.person.payForParking()
+            elif response.lower() == 'leave':
+                self.person.leaveGarage()
+           
+            
+#Driver Code
+my_parking = Parking_garage()
+ui = UI(my_parking)
+ui.run_program()
 
